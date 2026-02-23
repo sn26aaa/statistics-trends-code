@@ -1,166 +1,148 @@
 """
 Statistics and Trends Assignment
---------------------------------
-This script performs preprocessing, visualization, and statistical
-analysis on the StudentsPerformance dataset.
+Shows graphs only (no saving)
+Updated matrix colour and improved visuals
 """
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import scipy.stats as ss
 import seaborn as sns
 
 
-def plot_relational_plot(df):
+def plot_statistical_plot(df):
     """
-    Creates and saves a relational plot.
+    1. Distribution of Mathematics Scores
     """
-    fig, ax = plt.subplots()
+    numeric_cols = df.select_dtypes(include=np.number).columns
 
-    sns.scatterplot(
-        data=df,
-        x='math score',
-        y='reading score',
-        ax=ax
-    )
+    if len(numeric_cols) == 0:
+        print("No numeric columns available.")
+        return
 
-    ax.set_title('Math Score vs Reading Score')
-    ax.set_xlabel('Math Score')
-    ax.set_ylabel('Reading Score')
+    maths_col = numeric_cols[0]
+
+    plt.figure()
+    sns.histplot(df[maths_col], kde=True, color="royalblue")
+
+    plt.title("Distribution of Mathematics Scores", fontsize=14)
+    plt.xlabel(maths_col)
+    plt.ylabel("Frequency")
 
     plt.tight_layout()
-    plt.savefig('relational_plot.png')
     plt.show()
-    plt.close()
+    return
+
+
+def plot_relational_plot(df):
+    """
+    2. Relationship Between Mathematics and Reading Scores
+    """
+    numeric_cols = df.select_dtypes(include=np.number).columns
+
+    if len(numeric_cols) < 2:
+        print("Not enough numeric columns.")
+        return
+
+    maths_col = numeric_cols[0]
+    reading_col = numeric_cols[1]
+
+    plt.figure()
+    sns.scatterplot(
+        data=df,
+        x=maths_col,
+        y=reading_col,
+        color="darkgreen"
+    )
+
+    plt.title("Relationship Between Mathematics and Reading Scores", fontsize=14)
+    plt.xlabel(maths_col)
+    plt.ylabel(reading_col)
+
+    plt.tight_layout()
+    plt.show()
+    return
 
 
 def plot_categorical_plot(df):
     """
-    Creates and saves a categorical plot.
+    3. Correlation Between Academic Subjects
     """
-    fig, ax = plt.subplots()
+    numeric_cols = df.select_dtypes(include=np.number).columns
 
-    sns.boxplot(
-        data=df,
-        x='gender',
-        y='math score',
-        ax=ax
+    if len(numeric_cols) < 2:
+        print("Not enough numeric columns.")
+        return
+
+    corr = df[numeric_cols].corr()
+
+    plt.figure()
+    sns.heatmap(
+        corr,
+        annot=True,
+        cmap="viridis",  # ✅ Changed matrix colour here
+        linewidths=0.5,
+        fmt=".2f"
     )
 
-    ax.set_title('Math Score by Gender')
-    ax.set_xlabel('Gender')
-    ax.set_ylabel('Math Score')
+    plt.title("Correlation Between Academic Subjects", fontsize=14)
 
     plt.tight_layout()
-    plt.savefig('categorical_plot.png')
     plt.show()
-    plt.close()
-
-
-def plot_statistical_plot(df):
-    """
-    Creates and saves a statistical distribution plot.
-    """
-    fig, ax = plt.subplots()
-
-    sns.histplot(
-        df['math score'],
-        kde=True,
-        ax=ax
-    )
-
-    ax.set_title('Distribution of Math Scores')
-    ax.set_xlabel('Math Score')
-    ax.set_ylabel('Frequency')
-
-    plt.tight_layout()
-    plt.savefig('statistical_plot.png')
-    plt.show()
-    plt.close()
+    return
 
 
 def statistical_analysis(df, col: str):
-    """
-    Calculates statistical moments for a selected column.
-    """
     mean = df[col].mean()
     stddev = df[col].std()
-    skew = ss.skew(df[col], nan_policy='omit')
-    excess_kurtosis = ss.kurtosis(df[col], nan_policy='omit')
+    skew = ss.skew(df[col], nan_policy="omit")
+    excess_kurtosis = ss.kurtosis(df[col], nan_policy="omit")
 
     return mean, stddev, skew, excess_kurtosis
 
 
 def preprocessing(df):
-    """
-    Performs basic preprocessing and exploratory analysis.
-    """
-    print('First five rows of the dataset:')
+    print("Columns found:", list(df.columns))
     print(df.head())
-    print()
-
-    print('Last five rows of the dataset:')
-    print(df.tail())
-    print()
-
-    print('Statistical summary:')
     print(df.describe())
-    print()
-
-    print('Correlation matrix:')
     print(df.corr(numeric_only=True))
-    print()
 
     df = df.dropna()
-
     return df
 
 
 def writing(moments, col):
-    """
-    Prints a written interpretation of the statistical moments.
-    """
-    print(f'For the attribute {col}:')
+    print(f"\nFor the attribute {col}:")
     print(
-        f'Mean = {moments[0]:.2f}, '
-        f'Standard Deviation = {moments[1]:.2f}, '
-        f'Skewness = {moments[2]:.2f}, and '
-        f'Excess Kurtosis = {moments[3]:.2f}.'
+        f"Mean = {moments[0]:.2f}, "
+        f"Standard Deviation = {moments[1]:.2f}, "
+        f"Skewness = {moments[2]:.2f}, "
+        f"Excess Kurtosis = {moments[3]:.2f}"
     )
-
-    if moments[2] > 2:
-        skewness = 'right skewed'
-    elif moments[2] < -2:
-        skewness = 'left skewed'
-    else:
-        skewness = 'not skewed'
-
-    if moments[3] > 2:
-        kurtosis = 'leptokurtic'
-    elif moments[3] < -2:
-        kurtosis = 'platykurtic'
-    else:
-        kurtosis = 'mesokurtic'
-
-    print(f'The data was {skewness} and {kurtosis}.')
+    return
 
 
 def main():
-    """
-    Main execution function.
-    """
-    df = pd.read_csv('StudentsPerformance.csv')
+    df = pd.read_csv("data.csv")
     df = preprocessing(df)
 
-    col = 'math score'
+    numeric_cols = df.select_dtypes(include=np.number).columns
 
-    plot_relational_plot(df)
+    if len(numeric_cols) == 0:
+        print("No numeric columns found.")
+        return
+
+    maths_col = numeric_cols[0]
+
     plot_statistical_plot(df)
+    plot_relational_plot(df)
     plot_categorical_plot(df)
 
-    moments = statistical_analysis(df, col)
-    writing(moments, col)
+    moments = statistical_analysis(df, maths_col)
+    writing(moments, maths_col)
+    return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
