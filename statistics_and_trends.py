@@ -1,13 +1,10 @@
 """
-This is the template file for the statistics and trends assignment.
-You will be expected to complete all the sections and
-make this a fully working, documented file.
-You should NOT change any function, file or variable names,
- if they are given to you here.
-Make use of the functions presented in the lectures
-and ensure your code is PEP-8 compliant, including docstrings.
+Statistics and Trends Assignment
+--------------------------------
+This script performs preprocessing, visualization, and statistical
+analysis on the StudentsPerformance dataset.
 """
-from corner import corner
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -29,6 +26,9 @@ def plot_relational_plot(df):
     )
 
     ax.set_title('Math Score vs Reading Score')
+    ax.set_xlabel('Math Score')
+    ax.set_ylabel('Reading Score')
+
     plt.tight_layout()
     plt.savefig('relational_plot.png')
     plt.show()
@@ -49,6 +49,9 @@ def plot_categorical_plot(df):
     )
 
     ax.set_title('Math Score by Gender')
+    ax.set_xlabel('Gender')
+    ax.set_ylabel('Math Score')
+
     plt.tight_layout()
     plt.savefig('categorical_plot.png')
     plt.show()
@@ -68,6 +71,9 @@ def plot_statistical_plot(df):
     )
 
     ax.set_title('Distribution of Math Scores')
+    ax.set_xlabel('Math Score')
+    ax.set_ylabel('Frequency')
+
     plt.tight_layout()
     plt.savefig('statistical_plot.png')
     plt.show()
