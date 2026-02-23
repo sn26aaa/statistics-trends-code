@@ -81,7 +81,7 @@ def plot_categorical_plot(df):
     sns.heatmap(
         corr,
         annot=True,
-        cmap="viridis",  # ✅ Changed matrix colour here
+        cmap="viridis",  
         linewidths=0.5,
         fmt=".2f"
     )
