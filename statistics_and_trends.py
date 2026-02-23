@@ -1,7 +1,7 @@
 """
 Statistics and Trends Assignment
 Shows graphs only (no saving)
-Updated matrix colour and improved visuals
+PEP-8 compliant (Flake8 safe)
 """
 
 import matplotlib.pyplot as plt
@@ -26,7 +26,10 @@ def plot_statistical_plot(df):
     plt.figure()
     sns.histplot(df[maths_col], kde=True, color="royalblue")
 
-    plt.title("Distribution of Mathematics Scores", fontsize=14)
+    plt.title(
+        "Distribution of Mathematics Scores",
+        fontsize=14
+    )
     plt.xlabel(maths_col)
     plt.ylabel("Frequency")
 
@@ -56,7 +59,10 @@ def plot_relational_plot(df):
         color="darkgreen"
     )
 
-    plt.title("Relationship Between Mathematics and Reading Scores", fontsize=14)
+    plt.title(
+        "Relationship Between Mathematics and Reading Scores",
+        fontsize=14
+    )
     plt.xlabel(maths_col)
     plt.ylabel(reading_col)
 
@@ -81,12 +87,15 @@ def plot_categorical_plot(df):
     sns.heatmap(
         corr,
         annot=True,
-        cmap="viridis",  
+        cmap="viridis",
         linewidths=0.5,
         fmt=".2f"
     )
 
-    plt.title("Correlation Between Academic Subjects", fontsize=14)
+    plt.title(
+        "Correlation Between Academic Subjects",
+        fontsize=14
+    )
 
     plt.tight_layout()
     plt.show()
@@ -94,15 +103,24 @@ def plot_categorical_plot(df):
 
 
 def statistical_analysis(df, col: str):
+    """
+    Calculate statistical moments.
+    """
     mean = df[col].mean()
     stddev = df[col].std()
     skew = ss.skew(df[col], nan_policy="omit")
-    excess_kurtosis = ss.kurtosis(df[col], nan_policy="omit")
+    excess_kurtosis = ss.kurtosis(
+        df[col],
+        nan_policy="omit"
+    )
 
     return mean, stddev, skew, excess_kurtosis
 
 
 def preprocessing(df):
+    """
+    Inspect dataset.
+    """
     print("Columns found:", list(df.columns))
     print(df.head())
     print(df.describe())
@@ -113,6 +131,9 @@ def preprocessing(df):
 
 
 def writing(moments, col):
+    """
+    Print statistical interpretation.
+    """
     print(f"\nFor the attribute {col}:")
     print(
         f"Mean = {moments[0]:.2f}, "
